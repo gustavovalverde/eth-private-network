@@ -1,0 +1,60 @@
+participants:
+  - el_type: geth
+    el_image: "ethereum/client-go:v1.14.8"
+    cl_type: lighthouse
+    cl_image: "sigp/lighthouse:v5.3.0"
+    count: 3
+    prometheus_config:
+      scrape_interval: 15s
+      labels: {}
+network_params:
+  seconds_per_slot: 6
+  genesis_delay: 120
+additional_services:
+  - prometheus_grafana # Spins up a grafana with prometheus to monitor the performance of the devnet
+  # TODO: No image available for Arm64 https://github.com/blockscout/blockscout-rs/issues/1001. Use Dora instead.
+  # - blockscout
+  - dora # A ligthweight beaconchain explorer
+  - el_forkmon # A tool to keep track on a set of nodes, and see if they keep in step or if they go out of consensus.
+  - beacon_metrics_gazer # A validator metrics tool to monitor the performance of the validators on the network
+  - assertoor # Testing tool with asserting conditions
+  - blobscan # A tool to scan the network for blobs and analyze the data that is being sent around
+  - dugtrio # A consensus layer load balancer
+  - blutgang # An execution layer load balancer
+  - tracoor # A beacon data and execution trace explorer
+prometheus_params:
+  storage_tsdb_retention_time: "1d"
+  storage_tsdb_retention_size: "512MB"
+  min_cpu: 10
+  max_cpu: 1000
+  min_mem: 128
+  max_mem: 2048
+grafana_params:
+  additional_dashboards: []
+  min_cpu: 10
+  max_cpu: 1000
+  min_mem: 128
+  max_mem: 2048
+assertoor_params:
+  run_stability_check: true
+  run_transaction_test: true
+# global_log_level: "info"
+snooper_enabled: false
+ethereum_metrics_exporter_enabled: true
+# disable_peer_scoring: false
+# persistent: true
+xatu_sentry_enabled: false # TODO: Enable this once the Xatu Server/Clickhouse is deployed outside of Kurtosis
+xatu_sentry_params:  
+  xatu_sentry_image: ethpandaops/xatu:latest
+  xatu_server_addr: localhost:8080
+  xatu_server_tls: false
+  xatu_server_headers: {}
+  beacon_subscriptions:
+    - attestation
+    - block
+    - chain_reorg
+    - finalized_checkpoint
+    - head
+    - voluntary_exit
+    - contribution_and_proof
+    - blob_sidecar

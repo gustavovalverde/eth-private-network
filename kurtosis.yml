@@ -1,0 +1,4 @@
+name: "github.com/gustavovalverde/private-eth-network"
+description: |
+  This is a Kurtosis package for deploying a private Ethereum network
+  with several useful tools for monitoring and testing.
