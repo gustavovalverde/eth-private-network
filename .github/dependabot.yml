@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    pull-request-branch-name:
+      separator: "-"
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "deps(actions): "
+    groups:
+      docker:
+        patterns:
+          - "docker*"
+      pandaops:
+        patterns:
+          - "ethpandaops*"
+      others:
+        patterns:
+          - "*"

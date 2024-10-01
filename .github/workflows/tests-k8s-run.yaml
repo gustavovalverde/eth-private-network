@@ -1,0 +1,98 @@
+name: Run k8s test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**/*.star'
+      - 'network_params.yaml'
+      - '.github/workflows/tests-k8s-run.yaml'
+  pull_request:
+    branches:
+        - main
+    paths:
+      - '**/*.star'
+      - 'network_params.yaml'
+      - '.github/workflows/tests-k8s-run.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+  issues: read
+  statuses: read
+  checks: read
+  deployments: read
+  attestations: read
+  id-token: none
+  discussions: none
+  packages: none
+  pages: none
+  repository-projects: none
+  security-events: none
+
+jobs:
+  run-k8s-test:
+    name: Run k8s test
+    strategy:
+      matrix:
+        payload:
+          - { name: "minimal", file: "./.github/tests/minimal.yaml" }
+          - { name: "network-params", file: "./network_params.yaml" }
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.0
+
+      - name: Setup minikube
+        id: minikube
+        uses: medyagh/setup-minikube@v0.0.18
+
+      - name: Get kubeconfig
+        id: kubeconfig
+        shell: bash
+        run: |
+          cat ~/.kube/config > kubeconfig
+          echo "kubeconfig=$(cat kubeconfig | base64 -w 0)" >> $GITHUB_OUTPUT
+
+      # run kurtosis test and assertoor
+      - name: Run kurtosis testnet
+        id: testnet
+        uses: ethpandaops/kurtosis-assertoor-github-action@5932604b244dbd2ddb811516b516a9094f4d2c2f # v1 - TODO: Change it once they start using semver
+        with:
+          kurtosis_extra_args: "--image-download always --non-blocking-tasks --verbosity DETAILED"
+          kurtosis_backend: "kubernetes"
+          kubernetes_config: "${{ steps.kubeconfig.outputs.kubeconfig }}"
+          kubernetes_cluster: "minikube"
+          kubernetes_storage_class: "standard"
+          ethereum_package_branch: ""
+          ethereum_package_args: "${{ matrix.payload.file }}"
+          ethereum_package_url: "$GITHUB_WORKSPACE"
+          enclave_name: "ethereum-package-${{ matrix.payload.name }}-${{ github.run_id }}"
+          persistent_logs: "true"
+
+  failure-issue:
+    name: Open or update issues for failed tests
+    needs: [ run-k8s-test ]
+    # Just fail if the test failed, or if the test was cancelled, and it's not from a PR.
+    if: (failure() && github.event.pull_request == null) || (cancelled() && github.event.pull_request == null)
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      issues: write
+    steps:
+      - uses: jayqi/failed-build-issue-action@v1.2.0
+        with:
+          title-template: "K8s failed in {{refname}} branch: {{eventName}} in {{workflow}}"
+          # New failures open an issue with this label.
+          label-name: auto-build-failure
+          # If there is already an open issue with this label, any failures become comments on that issue.
+          always-create-new-issue: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}

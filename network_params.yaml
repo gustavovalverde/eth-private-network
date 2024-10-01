@@ -12,8 +12,7 @@ network_params:
   genesis_delay: 120
 additional_services:
   - prometheus_grafana # Spins up a grafana with prometheus to monitor the performance of the devnet
-  # TODO: No image available for Arm64 https://github.com/blockscout/blockscout-rs/issues/1001. Use Dora instead.
-  # - blockscout
+  # - blockscout # TODO: No image available for Arm64. Wait for https://github.com/blockscout/blockscout-rs/pull/747. Use Dora instead.
   - dora # A ligthweight beaconchain explorer
   - el_forkmon # A tool to keep track on a set of nodes, and see if they keep in step or if they go out of consensus.
   - beacon_metrics_gazer # A validator metrics tool to monitor the performance of the validators on the network
@@ -29,8 +28,11 @@ prometheus_params:
   max_cpu: 1000
   min_mem: 128
   max_mem: 2048
+# TODO: add extra custom dashboards and alerts to the list
 grafana_params:
-  additional_dashboards: []
+  additional_dashboards:
+    # - src/grafana/provisioning/alerting/alert_rules.yaml
+    # - src/grafana/provisioning/dashboards/custom_darshboard.yaml
   min_cpu: 10
   max_cpu: 1000
   min_mem: 128
@@ -38,13 +40,16 @@ grafana_params:
 assertoor_params:
   run_stability_check: true
   run_transaction_test: true
+  tests:
+    - https://raw.githubusercontent.com/ethpandaops/assertoor-test/master/assertoor-tests/block-proposal-check.yaml
+    - https://raw.githubusercontent.com/ethpandaops/assertoor-test/master/assertoor-tests/all-opcodes-test.yaml
 # global_log_level: "info"
 snooper_enabled: false
 ethereum_metrics_exporter_enabled: true
 # disable_peer_scoring: false
 # persistent: true
 xatu_sentry_enabled: false # TODO: Enable this once the Xatu Server/Clickhouse is deployed outside of Kurtosis
-xatu_sentry_params:  
+xatu_sentry_params:
   xatu_sentry_image: ethpandaops/xatu:latest
   xatu_server_addr: localhost:8080
   xatu_server_tls: false
