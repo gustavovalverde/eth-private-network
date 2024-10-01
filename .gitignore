@@ -1,5 +1,6 @@
 # Custom ignore rules for the Kurtosis CLI
 kurtosis-dump-*
+kurtosis-engine-logs-*
 Support/kurtosis/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,solidity,python,windows,linux,intellij
