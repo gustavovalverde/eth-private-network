@@ -34,8 +34,8 @@ While Docker Compose is a great tool to deploy a network of services, it lacks s
 
 When talking about packages the next tool that comes to mind is Helm—the package manager for Kubernetes—, but Helm is more focused on deploying applications in a Kubernetes cluster, and you might not be familiar with Kubernetes, and you might not want to learn it just to deploy a private Ethereum network for testing purposes.
 
-> [!INFO]
-> If you are looking to deploy a private Ethereum network in a production environment, you should consider using Helm or other tools that are more focused on deploying applications for production environments.
+> [!NOTE]
+> If you are looking to deploy a private Ethereum network in a production environment (or public Dev/Testnet networks), you should consider using Helm or other tools that are more focused for this purpose. Consider using https://github.com/ethpandaops/template-devnets or https://github.com/ethpandaops/ethereum-helm-charts
 
 ### Caveats
 
@@ -45,11 +45,6 @@ Unfortunately, Kurtosis doesn't have a way to easily migrate or deploy using oth
 
 > [!WARNING]
 > Right now, Kurtosis is best suited for loca/dev/testing use cases and simplifying onboarding to a distributed app. It's missing some features fto use it as a production deployment or infrastructure management tool.
-
-And
-
-> [!NOTE]
-> If you are looking to deploy a private Ethereum network in a production environment (or public Dev/Testnet networks), you should consider using Helm or other tools that are more focused for this purpose. Consider using https://github.com/ethpandaops/template-devnets or https://github.com/ethpandaops/ethereum-helm-charts
 
 ## Understanding Kurtosis and the Ethereum Package
 
