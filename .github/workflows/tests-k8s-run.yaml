@@ -27,9 +27,9 @@ permissions:
   pull-requests: read
   issues: read
   statuses: read
-  checks: read
   deployments: read
-  attestations: read
+  attestations: none
+  checks: none
   id-token: none
   discussions: none
   packages: none
@@ -39,13 +39,15 @@ permissions:
 
 jobs:
   run-k8s-test:
-    name: Run k8s test
+    name: Run k8s ${{ matrix.payload.name }} test
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         payload:
-          - { name: "minimal", file: "./.github/tests/minimal.yaml" }
+          - { name: "minimal", file: ".github/workflows/tests/minimal.yaml" }
           - { name: "network-params", file: "./network_params.yaml" }
-    runs-on: ubuntu-latest
+      fail-fast: false
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.0
@@ -79,10 +81,10 @@ jobs:
 
   failure-issue:
     name: Open or update issues for failed tests
+    runs-on: ubuntu-latest
     needs: [ run-k8s-test ]
     # Just fail if the test failed, or if the test was cancelled, and it's not from a PR.
     if: (failure() && github.event.pull_request == null) || (cancelled() && github.event.pull_request == null)
-    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
