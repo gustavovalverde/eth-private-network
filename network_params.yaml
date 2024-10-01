@@ -30,7 +30,7 @@ prometheus_params:
   max_mem: 2048
 # TODO: add extra custom dashboards and alerts to the list
 grafana_params:
-  additional_dashboards:
+  additional_dashboards: []
     # - src/grafana/provisioning/alerting/alert_rules.yaml
     # - src/grafana/provisioning/dashboards/custom_darshboard.yaml
   min_cpu: 10
