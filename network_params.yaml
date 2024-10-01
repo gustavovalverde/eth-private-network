@@ -28,9 +28,9 @@ prometheus_params:
   max_cpu: 1000
   min_mem: 128
   max_mem: 2048
-# TODO: add extra custom dashboards and alerts to the list
 grafana_params:
   additional_dashboards: []
+    # TODO: add extra custom dashboards and alerts to the list once it's supported
     # - src/grafana/provisioning/alerting/alert_rules.yaml
     # - src/grafana/provisioning/dashboards/custom_darshboard.yaml
   min_cpu: 10
@@ -41,8 +41,8 @@ assertoor_params:
   run_stability_check: true
   run_transaction_test: true
   tests:
-    - https://raw.githubusercontent.com/ethpandaops/assertoor-test/master/assertoor-tests/block-proposal-check.yaml
-    - https://raw.githubusercontent.com/ethpandaops/assertoor-test/master/assertoor-tests/all-opcodes-test.yaml
+    - ./.github/workflows/tests/assertoor/all-opcodes-test.yaml
+    - ./.github/workflows/tests/assertoor/block-proposal-check.yaml
 # global_log_level: "info"
 snooper_enabled: false
 ethereum_metrics_exporter_enabled: true
