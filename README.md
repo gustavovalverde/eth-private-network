@@ -59,6 +59,43 @@ The best places to start are:
 - [Running an L2 devnet](https://ethpandaops.io/posts/kurtosis-l2/) on top of the Ethereum Package
 - [Testing](https://ethpandaops.io/posts/assertoor-introduction/) with the Ethereum Package
 
+## What to expect from this package
+
+This package is mainly governed by the configurations in the `network_params.yaml` file, which is a YAML file that contains the parameters used to deploy the network, including:
+
+- Execution Layer (EL) and Consensus Layer (CL) configurations
+- Number of nodes
+- Node configurations
+- Network configurations
+- Service configurations
+- Test configurations
+- And more
+
+The `network_params.yaml` file is the main file that you should look at to understand how the network is configured and what services are being deployed. You can extend this file to add more services, change the network configurations, or add more nodes to the network.
+
+### Included services
+
+#### Nodes Monitoring
+
+- [Prometheus](https://prometheus.io/)
+- [Grafana](https://grafana.com/)
+- [beacon-metrics-gazer](https://crates.io/crates/beacon-metrics-gazer)
+- [Node Monitor](https://github.com/ethereum/nodemonitor) (`el_fokmon`)
+
+#### Explorers & Scanning
+
+- [Dora](https://github.com/ethpandaops/dora)
+- [Tracoor](https://ethpandaops.io/posts/tracoor-debug-tool/)
+- [Blobscan](https://blobscan.com/)
+
+#### Testing
+
+- [Assertoor](https://ethpandaops.io/posts/assertoor-introduction/)
+
+### Services configuration and customization
+
+The default services configuration can be find in the upstream [Ethereum Package](https://github.com/ethpandaops/ethereum-package/tree/main/static_files) repository. Further customization can be done by extending the `main.star` file, which is a [Starlark](https://bazel.build/rules/language) file that allows you to define the services that will be deployed in the network.
+
 ## Minikube
 
 If you want to run the network in a local Kubernetes cluster, you can use Minikube. To do so, you need to have Minikube installed and running, to do so, you can follow this instructions:
